@@ -6,6 +6,11 @@ import Banner from '../components/Banner'
 import requests from '../utils/requests'
 import { Movie } from '../typings'
 import Row from '../components/Row'
+import useAuth from '../hooks/useAuth'
+import { TailSpin } from 'react-loading-icons'
+import { modalState } from '../atoms/modalAtom'
+import { useRecoilValue } from 'recoil'
+import Modal from '../components/Modal'
 
 interface Props {
   netflixOriginals: Movie[]
@@ -27,7 +32,10 @@ const Home = ({
   topRated,
   trendingNow,
 }: Props) => {
-  return (
+  const { loading } = useAuth()
+  const showModal = useRecoilValue(modalState)
+
+  return !loading ? (
     <div className="relative  h-screen bg-gradient-to-b lg:h-[140vh]">
       <Head>
         <title>HOME | NETFLIX</title>
@@ -50,7 +58,11 @@ const Home = ({
           <Row title="Documentaries" movies={documentaries} />
         </section>
       </main>
-      {/* Modal */}
+      {showModal && <Modal />}
+    </div>
+  ) : (
+    <div className="relative flex items-center justify-center mt-[30%] h-[30%]">
+      <TailSpin className="center" />
     </div>
   )
 }
